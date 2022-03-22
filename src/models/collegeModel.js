@@ -2,9 +2,9 @@ const mongoose = require('mongoose')
 
 const collegeSchema = new mongoose.Schema({
 
-    name: { type: String, required: true, unique: true },
+    name: { type: String, required: true, unique: [true,'this name is already used'] },
 
-    fullName: { type: String, required: true, unique: true },
+    fullName: { type: String, required: true, unique: [true,'this fullName is already used'] },
 
     logoLink: {type: String, required: true},
 

@@ -46,5 +46,36 @@ catch (err) {
 }
 }
 
+const collegeDetails = async function(req,res){
+    try {
+        collegeName = req.query.collegeName;
+        if(!collegeName)
+        
+        return res.status(400).send({status:false, msg:'please provide collegeName in the query'})
+
+        const collegeNames = await collegeModel.findOne({ name : collegeName, isDeleted:false })
+        if(!collegeNames) {
+            return res.status(404).send({ status : false , message : "no college available with this name" })
+        }
+        // let colleges = await collegeModel.findOne({name:collegeName, isDeleted:false})
+        const {name,fullName,logoLink} = collegeNames
+
+        const collegeId = collegeNames._id
+
+        const internDetails = await internModel.find({collegeId:collegeId, isDeleted:false}).select
+        ({"_id":1,"name":1,"email":1,"mobile":1})
+        
+
+        const interns = internDetails
+        const data = {name:name,fullName:fullName,logoLink:logoLink,interns:internDetails}
+        return res.status(201).send({ status: true, data: data })
+    }
+    catch (err) {
+        res.status(500).send({ status: false, msg: err.message });
+    }
+
+    }
+
 
 module.exports.createCollege = createCollege
+module.exports.collegeDetails = collegeDetails

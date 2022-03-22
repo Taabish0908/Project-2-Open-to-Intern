@@ -2,14 +2,17 @@ const mongoose = require('mongoose')
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const internSchema = new mongoose.Schema({
-    name: String,
-    email: {unique:true,
+    
+    name: {type: String,
+        required: 'name is required'},
+    email: {unique:[true,'this mail is already used'],
         type: String,
-        required: true,
-        match: [/^\w+([\.-]?\w+)@\w+([\. -]?\w+)(\.\w{2,3})+$/, 'Please fill a valid email address']
+        required: [true,'please provide the mail Id'],
+        match: [/^\w+([\.-]?\w+)@\w+([\. -]?\w+)(\.\w{2,3})+$/, 'email is not valid']
 },
-    mobile: {
-        type: String,
+    mobile: {unique:[true,'this mobile number is already used'],
+        
+        type: Number,
         
         validate: {
             validator: function (str) {
