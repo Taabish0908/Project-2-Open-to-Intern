@@ -6,9 +6,20 @@ const isValid = function(value){
     if(typeof value === 'string' && value.trim().length ===0) return false
     return true
 }
-
+const isValidName = function(value){
+    if(!(value ===value.toLowerCase())){
+        return false
+    } return true
+}
 const isValidRequestBody = function(requestBody){
     return Object.keys(requestBody).length>0
+}
+
+const isValidLink = function(value) {
+    if (!(/(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-/]))?/.test(value.trim()))) {
+        return false
+    }
+    return true
 }
 
 const createCollege = async function (req, res) {
@@ -25,12 +36,21 @@ const createCollege = async function (req, res) {
            res.status(400).send({status: false, msg: "please enter college name" })
            return
        }
+       if(!isValidName(name)){
+           res.status(400).send({status:false, msg:"please enter the name in lower case only"})
+           return
+
+       }
        if(!isValid(fullName)) {
         res.status(400).send({status: false, msg: "please enter college full name" })
         return
     }
     if(!isValid(logoLink)) {
         res.status(400).send({status: false, msg: "please enter logo link" })
+        return
+    }
+    if(!isValidLink(logoLink)){
+        res.status(400).send({status: false, msg: 'the logo link is not valid'})
         return
     }
     if (collegeData) {
@@ -48,7 +68,7 @@ catch (err) {
 
 const collegeDetails = async function(req,res){
     try {
-        collegeName = req.query.collegeName;
+       const collegeName = req.query.collegeName;
         if(!collegeName)
         
         return res.status(400).send({status:false, msg:'please provide collegeName in the query'})
