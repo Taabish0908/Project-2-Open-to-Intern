@@ -22,8 +22,12 @@ const isValidLink = function(value) {
     return true
 }
 
+
 const createCollege = async function (req, res) {
     try {
+        let data = req.params;
+    if(!data)
+    return res.status(400).send({msg: "blog id needs to be present"})
         const collegeData = req.body;
         const {name,fullName,logoLink} = collegeData
        
@@ -53,6 +57,25 @@ const createCollege = async function (req, res) {
         res.status(400).send({status: false, msg: 'the logo link is not valid'})
         return
     }
+    // Cheking duplicate Entry Of College 
+    let duplicateEntries = await collegeModel.find();
+    let duplicateLength = duplicateEntries.length
+
+    if (duplicateLength != 0) {
+        // Checking duplicate fullName
+        const Name = await collegeModel.findOne({ name: name });
+        if (Name) {
+            return res.status(400).send({status: false, msg: "College Name already exists" });
+        }}
+
+        const duplicateCollegeName = await collegeModel.findOne({ fullName: fullName });
+        if (duplicateCollegeName) {
+            return res.status(400).send({status: false, msg: "College Full Name already exists" });
+        }
+        const Name = await collegeModel.findOne({ name: name });
+        if (Name) {
+            return res.status(400).send({status: false, msg: "College Name already exists" });
+        }
     if (collegeData) {
         let savedcollegeData = await collegeModel.create(collegeData)
         res.status(201).send({status: true, data: {savedcollegeData} })
@@ -88,7 +111,7 @@ const collegeDetails = async function(req,res){
 
         const interns = internDetails
         const data = {name:name,fullName:fullName,logoLink:logoLink,interns:internDetails}
-        return res.status(201).send({ status: true, data: data })
+        return res.status(200).send({ status: true, data: data })
     }
     catch (err) {
         res.status(500).send({ status: false, msg: err.message });

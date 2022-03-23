@@ -37,6 +37,14 @@ const createIntern = async function (req, res) {
             res.status(400).send({status: false, msg: 'please enter intern college Id' })
             return
         }
+        const emails = await internModel.findOne({ email: email });
+        if (emails) {
+            return res.status(400).send({status: false, msg: "email already exists" });
+        }
+        const Numbers = await internModel.findOne({ mobile: mobile});
+        if (Numbers) {
+            return res.status(400).send({status: false, msg: "mobile number already exists" });
+        }
         if(internData){
             let savedData = await internModel.create(internData)
             res.status(201).send({status: true, data: {savedData} })
